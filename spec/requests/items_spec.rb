@@ -47,6 +47,14 @@ RSpec.describe "Items API" do
       end
     end
 
+    context "when todo item with files" do
+      let!(:item) { create(:item, todo_id: todo.id) }
+
+      it "returns the item with attached file" do
+        expect(json["files"]).not_to be_empty
+      end
+    end
+
     context "when todo item does not exist" do
       let(:id) { 0 }
 
@@ -61,7 +69,13 @@ RSpec.describe "Items API" do
   end
 
   describe "POST /todos/:todo_id/items" do
-    let(:valid_attributes) { { name: "Visit Spb", done: false }.to_json }
+    let(:valid_attributes) do
+      {
+        name: "Visit Spb",
+        done: false,
+        files: [::Rack::Test::UploadedFile.new(Rails.root.join("spec", "support", "assets", "test-file.txt"))]
+      }.to_json
+    end
 
     context "when request attributes are valid" do
       before { post "/todos/#{todo_id}/items", params: valid_attributes, headers: headers }

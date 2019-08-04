@@ -28,7 +28,7 @@ class ItemsController < ApplicationController
   private
 
   def item_params
-    params.permit(:name, :done)
+    params.permit(:name, :done, files: [])
   end
 
   def set_todo
